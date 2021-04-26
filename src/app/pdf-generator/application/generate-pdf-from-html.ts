@@ -18,7 +18,7 @@ export class GeneratePdfFromHtml {
 
   async generate(
     html: string,
-    data: any,
+    data: object,
     format: PaperFormat = PaperFormat.A4
   ): Promise<Buffer> {
     const builtHtml = this.templateEngine.build(html, data);

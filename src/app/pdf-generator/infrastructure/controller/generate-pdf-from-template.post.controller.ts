@@ -12,7 +12,7 @@ export class GeneratePdfFromTemplatePostController {
   @Post('template')
   post(
     @Body('templateId') templateId: string,
-    @Body('data') data: any
+    @Body('data') data: object
   ): Promise<Buffer> {
     return this.generatePdfFromTemplate.generate(templateId, data);
   }

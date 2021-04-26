@@ -10,7 +10,7 @@ export class GeneratePdfFromHtmlPostController {
   ) {}
 
   @Post('html')
-  post(@Body('html') html: string, @Body('data') data: any) {
+  post(@Body('html') html: string, @Body('data') data: object) {
     return this.generatePdfFromHtml.generate(html, data);
   }
 }

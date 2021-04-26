@@ -1,3 +1,3 @@
 export interface TemplateEngine {
-  build: (html: string, data: any) => string;
+  build: (html: string, data: object) => string;
 }

@@ -4,7 +4,7 @@ import { TemplateModel } from './template-model';
 import { model, Model } from 'mongoose';
 import { templateSchema } from './template-schema';
 import { Injectable } from '../../../../core';
-import { fromTemplateModelToTemplate } from './map-template';
+import { TemplateModelEntityMapper } from './map-template';
 import { PartialWithId } from '../../../shared/domain/partial-with-id';
 
 @Injectable()
@@ -17,12 +17,15 @@ export class MongooseTemplateRepository implements TemplateRepository {
 
   async list(): Promise<Template[]> {
     const templates = await this.model.find().exec();
-    return templates.map((template) => fromTemplateModelToTemplate(template));
+    return templates.map(
+      (template) =>
+        TemplateModelEntityMapper.fromTemplateModelToTemplate(template)!
+    );
   }
 
   async findById(id: string): Promise<Template | null> {
     const template = await this.model.findOne({ id }).exec();
-    return template && fromTemplateModelToTemplate(template);
+    return TemplateModelEntityMapper.fromTemplateModelToTemplate(template);
   }
 
   async create(template: Template): Promise<void> {
@@ -32,13 +35,16 @@ export class MongooseTemplateRepository implements TemplateRepository {
 
   async update(template: PartialWithId<Template>): Promise<Template | null> {
     const updated = await this.model
-      .findOneAndUpdate({ id: template.id }, template)
+      .findOneAndUpdate(
+        { id: template.id },
+        TemplateModelEntityMapper.fromPartialTemplateToUpdateQuery(template)
+      )
       .exec();
-    return updated && fromTemplateModelToTemplate(updated);
+    return TemplateModelEntityMapper.fromTemplateModelToTemplate(updated);
   }
 
   async delete(id: string): Promise<Template | null> {
     const deleted = await this.model.findOneAndDelete({ id }).exec();
-    return deleted && fromTemplateModelToTemplate(deleted);
+    return TemplateModelEntityMapper.fromTemplateModelToTemplate(deleted);
   }
 }

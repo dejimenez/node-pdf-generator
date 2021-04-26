@@ -1,44 +1,55 @@
 import { UpdateQuery } from 'mongoose';
 import { PaperFormat } from '../../../shared/domain/paper-format';
 import { PartialWithId } from '../../../shared/domain/partial-with-id';
+import templateImage from '../../../template-image';
 import { Template } from '../../domain/entity/template';
 import { TemplateModel } from './template-model';
 
-export const fromTemplateToTemplateModel = (
-  template: Template
-): TemplateModel => {
-  return {
-    id: template.id,
-    name: template.name,
-    html: template.html,
-    paperFormat: template.paperFormat,
-  } as TemplateModel;
-};
+export class TemplateModelEntityMapper {
+  static fromTemplateToTemplateModel(template: Template): TemplateModel {
+    return {
+      id: template.id,
+      name: template.name,
+      html: template.html,
+      header: template.header,
+      footer: template.footer,
+      paperFormat: template.paperFormat,
+    } as TemplateModel;
+  }
 
-export const fromPartialTemplateToUpdateQuery = (
-  template: PartialWithId<Template>
-): UpdateQuery<Template> => {
-  const query: UpdateQuery<Template> = {
-    id: template.id,
-  };
+  static fromPartialTemplateToUpdateQuery(
+    template: PartialWithId<Template>
+  ): UpdateQuery<TemplateModel> {
+    const queryWithId = {
+      id: template.id,
+    };
+    const query: UpdateQuery<TemplateModel> = Object.keys(template)
+      .reduce((updateQuery: UpdateQuery<TemplateModel>, key: string) => {
+        if (template[key as keyof Template] !== undefined)
+          return {
+            ...updateQuery,
+            [key]: template[key as keyof Template],
+          };
 
-  return Object.keys(template).reduce(
-    (updateQuery: UpdateQuery<Template>, key: string) => {
-      if (template[key as keyof Template] !== undefined)
-        return { ...updateQuery, [key]: template[key as keyof Template] };
-      return updateQuery;
-    },
-    query
-  );
-};
+        return updateQuery;
+      }, queryWithId);
 
-export const fromTemplateModelToTemplate = (
-  template: TemplateModel
-): Template => {
-  return Template.create(
-    template.id,
-    template.name,
-    template.html,
-    template.paperFormat as PaperFormat
-  );
-};
+    return query;
+  }
+
+  static fromTemplateModelToTemplate(
+    template: TemplateModel | null
+  ): Template | null {
+    if (!template) return template;
+
+    return Template.create(
+      template.id,
+      template.name,
+      template.html,
+      template.header,
+      template.footer,
+      template.paperFormat as PaperFormat,
+      template.templateImages
+    );
+  }
+}

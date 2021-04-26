@@ -10,7 +10,7 @@ export class TemplateFindByIdGetController {
     private readonly templateFindById: TemplateFindById
   ) {}
 
-  @Get(':id/')
+  @Get(':id')
   get(@Param('id') id: string): Promise<TemplateDto> {
     return this.templateFindById.find(id);
   }

@@ -51,27 +51,24 @@ describe('GeneratePdfFromHtml', () => {
     expect(result).toBe(pdf);
   });
 
-    it('should use a default PaperFormat.A4', async () => {
-      const pdf = Buffer.from('pdf');
-      const builtTemplate = '<p>Name</p>';
+  it('should use a default PaperFormat.A4', async () => {
+    const pdf = Buffer.from('pdf');
+    const builtTemplate = '<p>Name</p>';
 
-      const spyPuppeteer = jest
-        .spyOn(puppeteerPdfGeneratorEngine, 'generate')
-        .mockImplementation(() => Promise.resolve(pdf));
-      const spyHandlebars = jest
-        .spyOn(handlebarsTemplateEngine, 'build')
-        .mockImplementation(() => builtTemplate);
+    const spyPuppeteer = jest
+      .spyOn(puppeteerPdfGeneratorEngine, 'generate')
+      .mockImplementation(() => Promise.resolve(pdf));
+    const spyHandlebars = jest
+      .spyOn(handlebarsTemplateEngine, 'build')
+      .mockImplementation(() => builtTemplate);
 
-      const html = '<p>{{name}}</p>';
-      const data = { name: 'Name' };
+    const html = '<p>{{name}}</p>';
+    const data = { name: 'Name' };
 
-      const result = await generatePdfFromHtml.generate(
-        html,
-        data,
-      );
+    const result = await generatePdfFromHtml.generate(html, data);
 
-      expect(spyHandlebars).toBeCalledWith(html, data);
-      expect(spyPuppeteer).toBeCalledWith(builtTemplate, PaperFormat.A4);
-      expect(result).toBe(pdf);
-    });
+    expect(spyHandlebars).toBeCalledWith(html, data);
+    expect(spyPuppeteer).toBeCalledWith(builtTemplate, PaperFormat.A4);
+    expect(result).toBe(pdf);
+  });
 });

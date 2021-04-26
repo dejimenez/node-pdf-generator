@@ -4,7 +4,7 @@ import { PdfGeneratorEngine } from '../../domain/service/pdf-generator-engine';
 
 @Injectable()
 export class PuppeteerPdfGeneratorEngine implements PdfGeneratorEngine {
-  async generate(html: string, format: PaperFormat = 'a4') {
+  async generate(html: string, format: PaperFormat = 'a4'): Promise<Buffer> {
     const browser = await launch({ headless: true });
     const page = await browser.newPage();
     await page.setContent(html, {
@@ -16,7 +16,10 @@ export class PuppeteerPdfGeneratorEngine implements PdfGeneratorEngine {
     return pdf;
   }
 
-  async generateFromUrl(url: string, format: PaperFormat = 'a4') {
+  async generateFromUrl(
+    url: string,
+    format: PaperFormat = 'a4'
+  ): Promise<Buffer> {
     const browser = await launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, {
@@ -62,7 +65,7 @@ export class PuppeteerPdfGeneratorEngine implements PdfGeneratorEngine {
   `;
   }
 
-  async renderGoogleChart(contentRaw: any, optsRaw: any) {
+  async renderGoogleChart(contentRaw: any, optsRaw: unknown) {
     let content = contentRaw;
     if (typeof contentRaw === 'function') {
       content = contentRaw.toString();

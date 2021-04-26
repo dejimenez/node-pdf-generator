@@ -23,18 +23,24 @@ describe('MongooseTemplateRepository', () => {
     'id1',
     'template1',
     '<p>{{name1}}</p>',
+    'header',
+    'footer',
     PaperFormat.A4
   );
   const template2 = Template.create(
     'id2',
     'template2',
     '<p>{{name2}}</p>',
+    'header',
+    'footer',
     PaperFormat.LETTER
   );
   const template3 = Template.create(
     'id3',
     'template3',
     '<p>{{name3}}</p>',
+    'header',
+    'footer',
     PaperFormat.LETTER
   );
 
@@ -126,7 +132,7 @@ describe('MongooseTemplateRepository', () => {
       expect(mongooseTemplateRepository.delete).toBeDefined();
     });
 
-    it('should get list of existing Templates', async () => {
+    it('should delete Template', async () => {
       await mongooseTemplateRepository.delete(template1.id);
       const list = await mongooseTemplateRepository.list();
 
